@@ -52,19 +52,28 @@ class App extends Component {
 
   renderClicks() {
     return (
-      <p className='clicks'>
-        {this.state.clicks}
-      </p>
+      <div>
+        <p className='clicks'>
+          Clicks: {this.state.clicks}
+        </p>
+        <p className='clicks'>
+          Clicks Per Second: {this.state.autoClickers}
+        </p>
+      </div>      
     )
   }
 
   render() {
-    console.log(this.state.autoClickers)
     return (
       <div className="app">
-        {this.renderClicks()}
-        {this.renderClickButton()}
-        {this.renderAutoClickButton()}
+        <div className="playSide">
+          
+          {this.renderClickButton()}
+          {this.renderAutoClickButton()}
+        </div>
+        <div className="statSide">
+          {this.renderClicks()}
+        </div>
       </div>
       );
   }

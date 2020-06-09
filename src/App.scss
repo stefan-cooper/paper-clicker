@@ -10,11 +10,26 @@ $gradient-5: #F9F871;
   background-color: $background-color;
   min-height: 100vh;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+}
+
+.playSide {
+  display: flex;
+  flex-direction: column;
+  margin: 2rem;
+  padding: 1rem;
+}
+
+.statSide {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  margin: 2rem;
+  border-radius: 10%;
 }
 
 .clicker {
