@@ -21,6 +21,13 @@ const actions = (state, action) => {
         exampleNewProp: action.payload
       };
     */
+
+    case "updateClicks":
+      return {
+        ...state,
+        clicks: action.payload
+      }
+
     default: {
       return state;
     }
@@ -32,6 +39,13 @@ const actions = (state, action) => {
   payload: true
 };
 */
+
+export const update = (clicks) => {
+  return {
+    type: "updateClicks",
+    payload: clicks
+  }
+}
 
 const configureStore = () => {
   if (module.hot) {
