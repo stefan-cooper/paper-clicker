@@ -27,6 +27,12 @@ const actions = (state, action) => {
         ...state,
         clicks: action.payload
       }
+    
+    case "updateAC":
+      return {
+        ...state,
+        autoClickers: action.payload
+      }
 
     default: {
       return state;
@@ -44,6 +50,13 @@ export const update = (clicks) => {
   return {
     type: "updateClicks",
     payload: clicks
+  }
+}
+
+export const updateAC = (autoClickers) => {
+  return {
+    type: "updateAC",
+    payload: autoClickers
   }
 }
 
