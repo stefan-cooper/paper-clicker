@@ -16,7 +16,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    for (var i=0; i <= this.state.autoClickers; i++) {
+    for (var i=0; i < this.state.autoClickers; i++) {
       window.setInterval(() => this.clickerAdd(), 1000)
     }
   }
