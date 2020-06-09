@@ -1,0 +1,30 @@
+// Colour Palette
+$background-color: #282C34;
+$gradient-1: #285467;
+$gradient-2: #00818A;
+$gradient-3: #2FAF91;
+$gradient-4: #8CD881;
+$gradient-5: #F9F871;
+
+.app {
+  background-color: $background-color;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.clicker {
+  background-color: $gradient-2;
+  color: white;
+  padding: 2rem;
+  border-radius: 5%;
+  cursor: pointer;
+}
+
+.clicker:hover {
+  background-color: $gradient-3;
+}
