@@ -23,6 +23,11 @@ $gradient-5: #F9F871;
   padding: 2rem;
   border-radius: 5%;
   cursor: pointer;
+  user-select: none;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
 }
 
 .clicker:hover {
