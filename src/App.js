@@ -37,7 +37,7 @@ class App extends Component {
   renderClickButton() {
     return (
       <div className='clicker' onClick={() => this.clickerAdd()}>
-        Click for Clicks
+        Make Paper
       </div>
     )
   }
@@ -45,7 +45,7 @@ class App extends Component {
   renderAutoClickButton() {
     return (
       <div className='clicker' onClick={() => this.autoClickerAdd()}>
-        Auto Clicker
+        Buy Auto Paper Maker
       </div>
     )
   }
@@ -54,10 +54,10 @@ class App extends Component {
     return (
       <div>
         <p className='clicks'>
-          Clicks: {this.state.clicks}
+          Total Paper: {this.state.clicks}
         </p>
         <p className='clicks'>
-          Clicks Per Second: {this.state.autoClickers}
+          Paper Per Second: {this.state.autoClickers}
         </p>
       </div>      
     )
