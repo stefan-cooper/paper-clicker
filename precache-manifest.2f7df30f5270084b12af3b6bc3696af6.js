@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "973586720ee66670901e22d3aeda3674",
+    "revision": "d0c03f6700ace701a36094d22b5e2b98",
     "url": "/clicker-game/index.html"
   },
   {
-    "revision": "abe40bf68551fee92b74",
+    "revision": "8e2e367a0a491f095bec",
     "url": "/clicker-game/static/css/main.a3353276.chunk.css"
   },
   {
@@ -16,8 +16,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/clicker-game/static/js/2.88555788.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "abe40bf68551fee92b74",
-    "url": "/clicker-game/static/js/main.4753c857.chunk.js"
+    "revision": "8e2e367a0a491f095bec",
+    "url": "/clicker-game/static/js/main.804d2d64.chunk.js"
   },
   {
     "revision": "e17d463282c5143d2a3e",
