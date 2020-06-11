@@ -11,7 +11,9 @@ class App extends Component {
 
     this.state = {
       clicks: this.props.clicks || 0,
-      autoClickers: this.props.autoClickers || 0
+      autoClickers: this.props.autoClickers || 0,
+      money: this.props.money || 0,
+      salePrice: this.props.saleMoney || 1
     }
   }
 
@@ -19,6 +21,7 @@ class App extends Component {
     for (var i=0; i < this.state.autoClickers; i++) {
       window.setInterval(() => this.clickerAdd(), 1000)
     }
+    window.setTimeout(() => this.sellPaper(), 1000 * this.state.salePrice)
   }
 
   clickerAdd() {
@@ -32,6 +35,11 @@ class App extends Component {
       this.props.updateAutoClickers(this.state.autoClickers)
     })
     window.setInterval(() => this.clickerAdd(), 1000)
+  }
+
+  sellPaper() {
+    this.setState({clicks: this.state.clicks - 1, money: this.state.money + this.state.salePrice})
+    window.setTimeout(() => this.sellPaper(), 1000 * this.state.salePrice)
   }
 
   renderClickButton() {
@@ -57,6 +65,12 @@ class App extends Component {
           Total Paper: {this.state.clicks}
         </p>
         <p className='clicks'>
+          Money: £{this.state.money}
+        </p>
+        <p className='clicks'>
+          Selling Price: £{this.state.salePrice}
+        </p>
+        <p className='clicks'>
           Paper Per Second: {this.state.autoClickers}
         </p>
       </div>      
@@ -64,6 +78,7 @@ class App extends Component {
   }
 
   render() {
+    
     return (
       <div className="app">
         <div className="playSide">
