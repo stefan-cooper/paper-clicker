@@ -22,16 +22,28 @@ const actions = (state, action) => {
       };
     */
 
-    case "updateClicks":
+    case "updatePaper":
       return {
         ...state,
-        clicks: action.payload
+        paper: action.payload
       }
     
-    case "updateAC":
+    case "updateAutoClickers":
       return {
         ...state,
         autoClickers: action.payload
+      }
+
+    case "updateMoney":
+      return {
+        ...state,
+        money: action.payload
+      }
+
+    case "updateSalePrice":
+      return {
+        ...state,
+        salePrice: action.payload
       }
 
     default: {
@@ -46,17 +58,31 @@ const actions = (state, action) => {
 };
 */
 
-export const update = (clicks) => {
+export const updPaper = (paper) => {
   return {
-    type: "updateClicks",
-    payload: clicks
+    type: "updatePaper",
+    payload: paper
   }
 }
 
-export const updateAC = (autoClickers) => {
+export const updAutoClickers = (autoClickers) => {
   return {
-    type: "updateAC",
+    type: "updateAutoClickers",
     payload: autoClickers
+  }
+}
+
+export const updMoney = (money) => {
+  return {
+    type: "updateMoney",
+    payload: money
+  }
+}
+
+export const updSalePrice= (salePrice) => {
+  return {
+    type: "updateSalePrice",
+    payload: salePrice
   }
 }
 
@@ -71,7 +97,7 @@ const configureStore = () => {
 
 export const store = createStore (
   persistReducer(persistConfig, actions),
-  { isLoggedIn: false },
+  {},
   applyMiddleware(...middle)
   );
 export const persistor = persistStore(store);
