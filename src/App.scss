@@ -33,7 +33,8 @@ $gradient-5: #F9F871;
 }
 
 .clicker {
-  margin-top: 1rem;
+  margin: 0.5rem;
+  text-align: center;
   background-color: $gradient-2;
   color: white;
   padding: 2rem;
@@ -44,6 +45,12 @@ $gradient-5: #F9F871;
   -khtml-user-select: none;
   -webkit-user-select: none;
   -ms-user-select: none;
+}
+
+.saleButtons {
+  margin: 1rem;
+  display: flex;
+  
 }
 
 .clicker:hover {
