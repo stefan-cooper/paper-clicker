@@ -1,23 +1,23 @@
 {
   "files": {
-    "main.css": "/clicker-game/static/css/main.ffaffea6.chunk.css",
-    "main.js": "/clicker-game/static/js/main.e081f74c.chunk.js",
-    "main.js.map": "/clicker-game/static/js/main.e081f74c.chunk.js.map",
-    "runtime-main.js": "/clicker-game/static/js/runtime-main.853da896.js",
-    "runtime-main.js.map": "/clicker-game/static/js/runtime-main.853da896.js.map",
-    "static/js/2.639be84e.chunk.js": "/clicker-game/static/js/2.639be84e.chunk.js",
-    "static/js/2.639be84e.chunk.js.map": "/clicker-game/static/js/2.639be84e.chunk.js.map",
-    "index.html": "/clicker-game/index.html",
-    "precache-manifest.192d809a065a0c3ab5c42a06e9270b45.js": "/clicker-game/precache-manifest.192d809a065a0c3ab5c42a06e9270b45.js",
-    "service-worker.js": "/clicker-game/service-worker.js",
-    "static/css/main.ffaffea6.chunk.css.map": "/clicker-game/static/css/main.ffaffea6.chunk.css.map",
-    "static/js/2.639be84e.chunk.js.LICENSE.txt": "/clicker-game/static/js/2.639be84e.chunk.js.LICENSE.txt",
-    "static/media/logo.svg": "/clicker-game/static/media/logo.5d5d9eef.svg"
+    "main.css": "/paper-clicker/static/css/main.ffaffea6.chunk.css",
+    "main.js": "/paper-clicker/static/js/main.92759be3.chunk.js",
+    "main.js.map": "/paper-clicker/static/js/main.92759be3.chunk.js.map",
+    "runtime-main.js": "/paper-clicker/static/js/runtime-main.34148a83.js",
+    "runtime-main.js.map": "/paper-clicker/static/js/runtime-main.34148a83.js.map",
+    "static/js/2.639be84e.chunk.js": "/paper-clicker/static/js/2.639be84e.chunk.js",
+    "static/js/2.639be84e.chunk.js.map": "/paper-clicker/static/js/2.639be84e.chunk.js.map",
+    "index.html": "/paper-clicker/index.html",
+    "precache-manifest.de39d3d83a68a86dae55a4358e97e993.js": "/paper-clicker/precache-manifest.de39d3d83a68a86dae55a4358e97e993.js",
+    "service-worker.js": "/paper-clicker/service-worker.js",
+    "static/css/main.ffaffea6.chunk.css.map": "/paper-clicker/static/css/main.ffaffea6.chunk.css.map",
+    "static/js/2.639be84e.chunk.js.LICENSE.txt": "/paper-clicker/static/js/2.639be84e.chunk.js.LICENSE.txt",
+    "static/media/logo.svg": "/paper-clicker/static/media/logo.5d5d9eef.svg"
   },
   "entrypoints": [
-    "static/js/runtime-main.853da896.js",
+    "static/js/runtime-main.34148a83.js",
     "static/js/2.639be84e.chunk.js",
     "static/css/main.ffaffea6.chunk.css",
-    "static/js/main.e081f74c.chunk.js"
+    "static/js/main.92759be3.chunk.js"
   ]
 }
