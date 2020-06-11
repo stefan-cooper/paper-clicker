@@ -1,23 +1,23 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "d0c03f6700ace701a36094d22b5e2b98",
+    "revision": "3ede6e5b9cdfecd3773f0212373f420a",
     "url": "/clicker-game/index.html"
   },
   {
-    "revision": "8e2e367a0a491f095bec",
-    "url": "/clicker-game/static/css/main.a3353276.chunk.css"
+    "revision": "a6360d34ddca48e346ab",
+    "url": "/clicker-game/static/css/main.ffaffea6.chunk.css"
   },
   {
-    "revision": "1c14eaca2e9eae4423e5",
-    "url": "/clicker-game/static/js/2.88555788.chunk.js"
+    "revision": "3a6a6aa42bf6b3b4dbed",
+    "url": "/clicker-game/static/js/2.639be84e.chunk.js"
   },
   {
     "revision": "c64c486544348f10a6d6c716950bc223",
-    "url": "/clicker-game/static/js/2.88555788.chunk.js.LICENSE.txt"
+    "url": "/clicker-game/static/js/2.639be84e.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "8e2e367a0a491f095bec",
-    "url": "/clicker-game/static/js/main.804d2d64.chunk.js"
+    "revision": "a6360d34ddca48e346ab",
+    "url": "/clicker-game/static/js/main.e081f74c.chunk.js"
   },
   {
     "revision": "e17d463282c5143d2a3e",
