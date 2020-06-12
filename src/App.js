@@ -13,9 +13,13 @@ class App extends Component {
       paper: this.props.paper || 0,
       autoClickers: this.props.autoClickers || 0,
       money: this.props.money || 0,
-      salePrice: this.props.salePrice || 1,
+      salePrice: this.props.salePrice || 0.25,
       selling: false
     }
+  }
+
+  saleModifier() {
+    return 10000 * this.state.salePrice * Math.random()
   }
 
   /*
@@ -27,7 +31,7 @@ class App extends Component {
       window.setInterval(() => this.clickerAdd(), 1000)
     }
     this.setState({selling: true})
-    window.setTimeout(() => this.sellPaper(), 1000 * this.state.salePrice)
+    window.setTimeout(() => this.sellPaper(), this.saleModifier())
   }
 
   // Add paper to the paper total
@@ -37,7 +41,7 @@ class App extends Component {
     })
     if (!this.state.selling) {
       this.setState({selling: true})
-      window.setTimeout(() => this.sellPaper(), 1000 * this.state.salePrice)
+      window.setTimeout(() => this.sellPaper(), this.saleModifier())
     }
   }
 
@@ -55,7 +59,7 @@ class App extends Component {
       this.setState({paper: this.state.paper - 1, money: this.state.money + this.state.salePrice}, () => {
         this.props.updateMoney(this.state.money)
       })
-      window.setTimeout(() => this.sellPaper(), 1000 * this.state.salePrice)
+      window.setTimeout(() => this.sellPaper(), this.saleModifier())
     } else {
       this.setState({selling: false})
     }
@@ -130,7 +134,7 @@ class App extends Component {
       <div className="app">
         <div className="playSide">
           {this.renderClickButton()}
-          {this.renderAutoClickButton()}
+          {/*this.renderAutoClickButton()*/}
           {this.renderSaleButtons()}
         </div>
         <div className="statSide">
