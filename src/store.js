@@ -45,6 +45,12 @@ const actions = (state, action) => {
         ...state,
         salePrice: action.payload
       }
+    
+    case "updateStock":
+      return {
+        ...state,
+        stock: action.payload
+      }
 
     default: {
       return state;
@@ -79,10 +85,17 @@ export const updMoney = (money) => {
   }
 }
 
-export const updSalePrice= (salePrice) => {
+export const updSalePrice = (salePrice) => {
   return {
     type: "updateSalePrice",
     payload: salePrice
+  }
+}
+
+export const updStock = (stock) => {
+  return {
+    type: "updateStock",
+    payload: stock
   }
 }
 

@@ -3,7 +3,7 @@ import logo from './logo.svg';
 import './App.scss';
 import { connect } from 'react-redux';
 import { withRouter} from 'react-router-dom';
-import { updPaper, updAutoClickers, updMoney, updSalePrice } from './store';
+import { updPaper, updAutoClickers, updMoney, updSalePrice, updStock } from './store';
 
 class App extends Component {
   constructor(props) {
@@ -11,15 +11,11 @@ class App extends Component {
 
     this.state = {
       paper: this.props.paper || 0,
+      stock: this.props.stock || 0,
       autoClickers: this.props.autoClickers || 0,
       money: this.props.money || 0,
-      salePrice: this.props.salePrice || 0.25,
-      selling: false
+      salePrice: this.props.salePrice || 0.25
     }
-  }
-
-  saleModifier() {
-    return 10000 * this.state.salePrice * Math.random()
   }
 
   /*
@@ -27,22 +23,27 @@ class App extends Component {
   *   Then start the infinite selling loop
   */
   componentDidMount() {
-    for (var i=0; i < this.state.autoClickers; i++) {
-      window.setInterval(() => this.clickerAdd(), 1000)
+    if (this.state.autoClickers > 0) {
+      window.setInterval(() => this.clickerAdd(), 1000 / this.state.autoClickers)
     }
-    this.setState({selling: true})
-    window.setTimeout(() => this.sellPaper(), this.saleModifier())
+    this.timedEvents()
+  }
+
+  timedEvents() {
+    window.setInterval(() => {
+      // TODO: replace this with demand
+      if (Math.random() > this.state.salePrice * 2) {
+        this.sellPaper(Math.floor( Math.random() / this.state.salePrice ))
+      }
+    }, 250)
   }
 
   // Add paper to the paper total
   clickerAdd() {
-    this.setState({paper: this.state.paper + 1}, () => {
+    this.setState({paper: this.state.paper + 1, stock: this.state.stock + 1}, () => {
       this.props.updatePaper(this.state.paper)
+      this.props.updateStock(this.state.stock)
     })
-    if (!this.state.selling) {
-      this.setState({selling: true})
-      window.setTimeout(() => this.sellPaper(), this.saleModifier())
-    }
   }
 
   // Add a new auto clicker
@@ -53,16 +54,16 @@ class App extends Component {
     window.setInterval(() => this.clickerAdd(), 1000)
   }
 
-  // Sell paper infinite loop on timeout
-  sellPaper() {
-    if (this.state.paper > 0) {
-      this.setState({paper: this.state.paper - 1, money: this.state.money + this.state.salePrice}, () => {
-        this.props.updateMoney(this.state.money)
-      })
-      window.setTimeout(() => this.sellPaper(), this.saleModifier())
-    } else {
-      this.setState({selling: false})
-    }
+  // Sell paper
+  sellPaper(toBeSold) {
+    if (this.state.stock > 0) {
+        this.setState({stock: toBeSold < this.state.stock ? this.state.stock - toBeSold : 0, 
+        money: toBeSold < this.state.stock ? this.state.money + (this.state.salePrice * toBeSold) 
+        : this.state.money + (this.state.salePrice * toBeSold - (((this.state.stock - toBeSold) * -1) * this.state.salePrice))}, () => {
+          this.props.updateMoney(this.state.money)
+          this.props.updateStock(this.state.stock)
+        })
+      }
   }
 
   // Increase sale price
@@ -117,6 +118,9 @@ class App extends Component {
           Total Paper: {this.state.paper}
         </p>
         <p className='clicks'>
+          Stock: {this.state.stock}
+        </p>
+        <p className='clicks'>
           Money: £{this.state.money.toFixed(2)}
         </p>
         <p className='clicks'>
@@ -164,6 +168,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     updateSalePrice: (price) => {
       dispatch(updSalePrice(price))
+    },
+    updateStock: (stock) => {
+      dispatch(updStock(stock))
     }
   }};
 
