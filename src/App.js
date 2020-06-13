@@ -14,7 +14,8 @@ class App extends Component {
       stock: this.props.stock || 0,
       autoClickers: this.props.autoClickers || 0,
       money: this.props.money || 0,
-      salePrice: this.props.salePrice || 0.25
+      salePrice: this.props.salePrice || 0.25,
+      interest: 0.08/this.props.salePrice
     }
   }
 
@@ -29,13 +30,19 @@ class App extends Component {
     this.timedEvents()
   }
 
+  // Interest in paper, more things can be added to this when we add more boosts and marketing etc.
+  calculateInterest() {
+    this.setState({interest: 0.08 / this.state.salePrice})
+  }
+
+  // These events are run every tenth of a second
   timedEvents() {
     window.setInterval(() => {
-      // TODO: replace this with demand
-      if (Math.random() > this.state.salePrice * 2) {
+      this.calculateInterest()
+      if (Math.random() < 0.08/this.state.salePrice) {
         this.sellPaper(Math.floor( Math.random() / this.state.salePrice ))
       }
-    }, 250)
+    }, 100)
   }
 
   // Add paper to the paper total
@@ -55,7 +62,8 @@ class App extends Component {
   }
 
   // Sell paper
-  sellPaper(toBeSold) {
+  sellPaper(selling) {
+    var toBeSold = selling > 10 ? 10 : selling
     if (this.state.stock > 0) {
         this.setState({stock: toBeSold < this.state.stock ? this.state.stock - toBeSold : 0, 
         money: toBeSold < this.state.stock ? this.state.money + (this.state.salePrice * toBeSold) 
@@ -125,6 +133,9 @@ class App extends Component {
         </p>
         <p className='clicks'>
           Selling Price: £{this.state.salePrice.toFixed(2)}
+        </p>
+        <p className='clicks'>
+          Public Interest: {(this.state.interest*100).toFixed(2)}%
         </p>
         <p className='clicks'>
           Paper Per Second: {this.state.autoClickers}
