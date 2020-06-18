@@ -55,8 +55,9 @@ class App extends Component {
 
   // Add a new auto clicker
   autoClickerAdd() {
-    this.setState({autoClickers: this.state.autoClickers + 1}, () => {
+    this.setState({autoClickers: this.state.autoClickers + 1, money: this.state.money - 25}, () => {
       this.props.updateAutoClickers(this.state.autoClickers)
+      this.props.updateMoney(this.state.money)
     })
     window.setInterval(() => this.clickerAdd(), 1000)
   }
@@ -100,7 +101,7 @@ class App extends Component {
 
   renderAutoClickButton() {
     return (
-      <div className='clicker' onClick={() => this.autoClickerAdd()}>
+      <div className={this.state.money > 25 ? 'clicker' : 'clicker-disabled'} onClick={this.state.money > 25 ? () => this.autoClickerAdd() : ''}>
         Buy Auto Paper Maker
       </div>
     )
@@ -149,8 +150,8 @@ class App extends Component {
       <div className="app">
         <div className="playSide">
           {this.renderClickButton()}
-          {/*this.renderAutoClickButton()*/}
           {this.renderSaleButtons()}
+          {this.state.paper > 100 ? this.renderAutoClickButton() : ''}
         </div>
         <div className="statSide">
           {this.renderPaper()}

@@ -47,6 +47,22 @@ $gradient-5: #F9F871;
   -ms-user-select: none;
 }
 
+.clicker-disabled {
+  margin: 0.5rem;
+  text-align: center;
+  background-color: $gradient-2;
+  color: white;
+  padding: 2rem;
+  border-radius: 5%;
+  user-select: none;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+
+  opacity: 50%;
+}
+
 .saleButtons {
   margin: 1rem;
   display: flex;
