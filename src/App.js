@@ -3,7 +3,7 @@ import logo from './logo.svg';
 import './App.scss';
 import { connect } from 'react-redux';
 import { withRouter} from 'react-router-dom';
-import { updPaper, updAutoClickers, updMoney, updSalePrice, updStock } from './store';
+import { updPaper, updAutoClickers, updMoney, updSalePrice, updStock, updWood } from './store';
 
 class App extends Component {
   constructor(props) {
@@ -15,7 +15,8 @@ class App extends Component {
       autoClickers: this.props.autoClickers || 0,
       money: this.props.money || 0,
       salePrice: this.props.salePrice || 0.25,
-      interest: 0.08/this.props.salePrice
+      interest: 0.08/this.props.salePrice,
+      wood: this.props.wood || 1000
     }
   }
 
@@ -25,7 +26,7 @@ class App extends Component {
   */
   componentDidMount() {
     if (this.state.autoClickers > 0) {
-      window.setInterval(() => this.clickerAdd(), 1000 / this.state.autoClickers)
+      window.setInterval(() => this.click(), 1000 / this.state.autoClickers)
     }
     this.timedEvents()
   }
@@ -46,11 +47,15 @@ class App extends Component {
   }
 
   // Add paper to the paper total
-  clickerAdd() {
-    this.setState({paper: this.state.paper + 1, stock: this.state.stock + 1}, () => {
-      this.props.updatePaper(this.state.paper)
-      this.props.updateStock(this.state.stock)
-    })
+  click() {
+    if (this.state.wood > 0) {
+      var randomWood = Math.random()
+      this.setState({paper: this.state.paper + 1, stock: this.state.stock + 1, wood: this.state.wood - randomWood > 0 ? this.state.wood - randomWood : 0}, () => {
+        this.props.updatePaper(this.state.paper)
+        this.props.updateStock(this.state.stock)
+        this.props.updateWood(this.state.wood)
+      })
+    }
   }
 
   // Add a new auto clicker
@@ -59,7 +64,16 @@ class App extends Component {
       this.props.updateAutoClickers(this.state.autoClickers)
       this.props.updateMoney(this.state.money)
     })
-    window.setInterval(() => this.clickerAdd(), 1000)
+    window.setInterval(() => this.click(), 1000)
+  }
+
+  // Add more wood
+  chopWood() {
+    this.setState({wood: this.state.wood + 800, money: this.state.money - 50}, () => {
+      this.props.updateWood(this.state.wood)
+      this.props.updateMoney(this.state.money)
+    })
+    window.setInterval(() => this.click(), 1000)
   }
 
   // Sell paper
@@ -93,7 +107,7 @@ class App extends Component {
 
   renderClickButton() {
     return (
-      <div className='clicker' onClick={() => this.clickerAdd()}>
+      <div className='clicker' onClick={() => this.click()}>
         Make Paper
       </div>
     )
@@ -103,6 +117,14 @@ class App extends Component {
     return (
       <div className={this.state.money > 25 ? 'clicker' : 'clicker-disabled'} onClick={this.state.money > 25 ? () => this.autoClickerAdd() : ''}>
         Buy Auto Paper Maker (£25)
+      </div>
+    )
+  }
+
+  renderChopWoodButton() {
+    return (
+      <div className={this.state.money > 50 ? 'clicker' : 'clicker-disabled'} onClick={this.state.money > 50 ? () => this.chopWood() : ''}>
+        Chop Down More Wood (£50)
       </div>
     )
   }
@@ -141,6 +163,9 @@ class App extends Component {
         <p className='clicks'>
           Paper Per Second: {this.state.autoClickers}
         </p>
+        <p className='clicks'> 
+          Remaining Wood: {this.state.wood.toFixed(2)}
+        </p>
       </div>      
     )
   }
@@ -151,6 +176,7 @@ class App extends Component {
         <div className="playSide">
           {this.renderClickButton()}
           {this.renderSaleButtons()}
+          {this.state.paper > 500 ? this.renderChopWoodButton() : ''}
           {this.state.paper > 100 ? this.renderAutoClickButton() : ''}
         </div>
         <div className="statSide">
@@ -183,6 +209,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     updateStock: (stock) => {
       dispatch(updStock(stock))
+    },
+    updateWood: (wood) => {
+      dispatch(updWood(wood))
     }
   }};
 

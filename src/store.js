@@ -51,6 +51,12 @@ const actions = (state, action) => {
         ...state,
         stock: action.payload
       }
+      
+    case "updateWood":
+      return {
+        ...state,
+        wood: action.payload
+      }
 
     default: {
       return state;
@@ -96,6 +102,13 @@ export const updStock = (stock) => {
   return {
     type: "updateStock",
     payload: stock
+  }
+}
+
+export const updWood = (wood) => {
+  return {
+    type: "updateWood",
+    payload: wood
   }
 }
 
