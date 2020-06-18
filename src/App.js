@@ -102,7 +102,7 @@ class App extends Component {
   renderAutoClickButton() {
     return (
       <div className={this.state.money > 25 ? 'clicker' : 'clicker-disabled'} onClick={this.state.money > 25 ? () => this.autoClickerAdd() : ''}>
-        Buy Auto Paper Maker
+        Buy Auto Paper Maker (£25)
       </div>
     )
   }
