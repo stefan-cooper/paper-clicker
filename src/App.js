@@ -132,11 +132,11 @@ class App extends Component {
   renderSaleButtons() {
     return (
       <div className='saleButtons'>
-        <div className='clicker' onClick={() => this.increaseSalePrice()}>
-          Increase Price
-        </div>
         <div className='clicker' onClick={() => this.decreaseSalePrice()}>
           Decrease Price
+        </div>
+        <div className='clicker' onClick={() => this.increaseSalePrice()}>
+          Increase Price
         </div>
       </div>
     )
@@ -149,18 +149,6 @@ class App extends Component {
           Total Paper: {this.state.paper}
         </p>
         <p className='clicks'>
-          Stock: {this.state.stock}
-        </p>
-        <p className='clicks'>
-          Money: £{this.state.money.toFixed(2)}
-        </p>
-        <p className='clicks'>
-          Selling Price: £{this.state.salePrice.toFixed(2)}
-        </p>
-        <p className='clicks'>
-          Public Interest: {(this.state.interest*100).toFixed(2)}%
-        </p>
-        <p className='clicks'>
           Paper Per Second: {this.state.autoClickers}
         </p>
         <p className='clicks'> 
@@ -170,17 +158,42 @@ class App extends Component {
     )
   }
 
+  renderFinancesSection() {
+    return (
+      <div>
+        <p className='clicks'>
+        Stock: {this.state.stock}
+        </p>
+        <p className='clicks'>
+          Money: £{this.state.money.toFixed(2)}
+        </p>
+        <p className='clicks'>
+          Public Interest: {(this.state.interest*100).toFixed(2)}%
+        </p>
+        <p className='clicks'>
+          Selling Price: £{this.state.salePrice.toFixed(2)}
+        </p>
+        {this.renderSaleButtons()}
+        
+      </div>
+      
+    )
+  }
+
   render() {
     return (
       <div className="app">
-        <div className="playSide">
-          {this.renderClickButton()}
-          {this.renderSaleButtons()}
-          {this.state.paper > 500 ? this.renderChopWoodButton() : ''}
-          {this.state.paper > 100 ? this.renderAutoClickButton() : ''}
+        <div className="finances">
+          {this.renderFinancesSection()}
         </div>
-        <div className="statSide">
+        <div className="play">
           {this.renderPaper()}
+          {this.renderClickButton()}
+          {this.state.paper > 100 ? this.renderAutoClickButton() : ''}
+          {this.state.paper > 500 ? this.renderChopWoodButton() : ''}
+        </div>
+        <div className="researchTeam">
+
         </div>
       </div>
     );
