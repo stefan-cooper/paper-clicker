@@ -58,6 +58,30 @@ const actions = (state, action) => {
         wood: action.payload
       }
 
+    case "updateStage":
+      return {
+        ...state,
+        stage: action.payload
+      }
+    
+    case "updateEmployees":
+      return {
+        ...state,
+        employees: action.payload
+      }
+    
+    case "updateResearch":
+      return {
+        ...state,
+        research: action.payload
+      }
+
+    case "updateThinkSpeed":
+      return {
+        ...state,
+        thinkSpeed: action.payload
+      }
+
     default: {
       return state;
     }
@@ -109,6 +133,34 @@ export const updWood = (wood) => {
   return {
     type: "updateWood",
     payload: wood
+  }
+}
+
+export const updStage = (stage) => {
+  return {
+    type: "updateStage",
+    payload: stage
+  }
+}
+
+export const updEmployees = (employees) => {
+  return {
+    type: "updateEmployees",
+    payload: employees
+  }
+}
+
+export const updResearch = (research) => {
+  return {
+    type: "updateResearch",
+    payload: research
+  }
+}
+
+export const updThinkSpeed = (thinkSpeed) => {
+  return {
+    type: "updateThinkSpeed",
+    payload: thinkSpeed
   }
 }
 

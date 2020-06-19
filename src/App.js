@@ -3,7 +3,7 @@ import logo from './logo.svg';
 import './App.scss';
 import { connect } from 'react-redux';
 import { withRouter} from 'react-router-dom';
-import { updPaper, updAutoClickers, updMoney, updSalePrice, updStock, updWood } from './store';
+import { updPaper, updAutoClickers, updMoney, updSalePrice, updStock, updWood, updStage, updEmployees, updResearch, updThinkSpeed } from './store';
 
 class App extends Component {
   constructor(props) {
@@ -16,7 +16,11 @@ class App extends Component {
       money: this.props.money || 0,
       salePrice: this.props.salePrice || 0.25,
       interest: 0.08/this.props.salePrice,
-      wood: this.props.wood || 1000
+      wood: this.props.wood || 0 || 1000,
+      stage: this.props.stage || 1,
+      employees: this.props.employees || 1,
+      research: this.props.research || 0,
+      thinkSpeed: this.props.thinkSpeed || 1
     }
   }
 
@@ -25,8 +29,12 @@ class App extends Component {
   *   Then start the infinite selling loop
   */
   componentDidMount() {
+    console.log(this.props.wood)
     if (this.state.autoClickers > 0) {
       window.setInterval(() => this.click(), 1000 / this.state.autoClickers)
+    }
+    if (this.state.stage > 1) {
+      this.updateThinker()
     }
     this.timedEvents()
   }
@@ -56,6 +64,21 @@ class App extends Component {
         this.props.updateWood(this.state.wood)
       })
     }
+  }
+
+  think() {
+    this.setState({research: this.state.research + 1}, () => {
+      this.props.updateResearch(this.state.research)
+    })
+  }
+
+  updateThinker() {
+    if (this.timerId) {
+      window.clearInterval(this.timerId)
+    }
+    this.timerId = window.setInterval(() => {this.think()}
+      ,(1000 / Math.pow(this.state.thinkSpeed, this.state.employees + this.state.thinkSpeed))
+    )
   }
 
   // Add a new auto clicker
@@ -89,6 +112,20 @@ class App extends Component {
       }
   }
 
+  hireEmployees() {
+    this.setState({employees: this.state.employees + 1}, () => {
+      this.props.updateEmployees(this.state.employees)
+      this.updateThinker()
+    })
+  }
+
+  trainEmployees() {
+    this.setState({thinkSpeed: this.state.thinkSpeed + 1}, () => {
+      this.props.updateThinkSpeed(this.state.thinkSpeed)
+      this.updateThinker()
+    })
+  }
+
   // Increase sale price
   increaseSalePrice() {
     this.setState({salePrice: this.state.salePrice + 0.01}, () => {
@@ -115,7 +152,7 @@ class App extends Component {
 
   renderAutoClickButton() {
     return (
-      <div className={this.state.money > 25 ? 'clicker' : 'clicker-disabled'} onClick={this.state.money > 25 ? () => this.autoClickerAdd() : ''}>
+      <div className={this.state.money > 25 ? 'clicker' : 'clicker disabled'} onClick={this.state.money > 25 ? () => this.autoClickerAdd() : ''}>
         Buy Auto Paper Maker (£25)
       </div>
     )
@@ -123,8 +160,20 @@ class App extends Component {
 
   renderChopWoodButton() {
     return (
-      <div className={this.state.money > 50 ? 'clicker' : 'clicker-disabled'} onClick={this.state.money > 50 ? () => this.chopWood() : ''}>
-        Chop Down More Wood (£50)
+      <div className={this.state.money > 50 ? 'clicker' : 'clicker disabled'} onClick={this.state.money > 50 ? () => this.chopWood() : ''}>
+        Chop Down Wood (£50)
+      </div>
+    )
+  }
+
+  renderResearchTeamButton() {
+    return (
+      <div className={this.state.money > 1000 ? 'clicker' : 'clicker disabled'} onClick={this.state.money > 1000 ? () => {
+        this.setState({stage: 2}, () => {
+          this.props.updateStage(this.state.stage)
+        })
+      } : ''}>
+        Buy Research Team (£1000)
       </div>
     )
   }
@@ -142,7 +191,7 @@ class App extends Component {
     )
   }
 
-  renderPaper() {
+  renderPlaySection() {
     return (
       <div>
         <p className='clicks'>
@@ -154,6 +203,20 @@ class App extends Component {
         <p className='clicks'> 
           Remaining Wood: {this.state.wood.toFixed(2)}
         </p>
+        {this.renderClickButton()}
+        {this.state.paper > 100 ? this.renderAutoClickButton() : ''}
+        {this.state.paper > 500 ? this.renderChopWoodButton() : ''}
+        {this.state.paper > 2000 && this.state.stage === 1 ? this.renderResearchTeamButton() : ''}
+        {this.state.stage > 1 ?
+          <div> 
+            <div className='clicker' onClick={() => this.hireEmployees()}>
+            Hire Employees (£500)
+            </div>
+            <div className='clicker' onClick={() => this.trainEmployees()}>
+              Train Employees (£1000)
+            </div>
+          </div>
+          : ''}
       </div>      
     )
   }
@@ -174,26 +237,38 @@ class App extends Component {
           Selling Price: £{this.state.salePrice.toFixed(2)}
         </p>
         {this.renderSaleButtons()}
-        
       </div>
-      
+    )
+  }
+
+  renderResearchSection() {
+    return (
+      <div>
+        <p className='clicks'>
+          Research: {this.state.research}
+        </p>
+        <p className='clicks'>
+          Employees: {this.state.employees}
+        </p>
+        <p className='clicks'>
+          Think Speed: {this.state.thinkSpeed}
+        </p>
+      </div>
     )
   }
 
   render() {
     return (
       <div className="app">
-        <div className="finances">
+        <div className={this.state.paper > 10 ? "finances" : "finances hidden"}>
           {this.renderFinancesSection()}
         </div>
         <div className="play">
-          {this.renderPaper()}
-          {this.renderClickButton()}
-          {this.state.paper > 100 ? this.renderAutoClickButton() : ''}
-          {this.state.paper > 500 ? this.renderChopWoodButton() : ''}
-        </div>
-        <div className="researchTeam">
-
+          
+          {this.renderPlaySection()}
+          </div>
+        <div className={this.state.stage > 1 ? "researchTeam" : "researchTeam hidden"}>
+          {this.renderResearchSection()}
         </div>
       </div>
     );
@@ -225,6 +300,18 @@ const mapDispatchToProps = (dispatch) => {
     },
     updateWood: (wood) => {
       dispatch(updWood(wood))
+    },
+    updateStage: (stage) => {
+      dispatch(updStage(stage))
+    },
+    updateEmployees: (employees) => {
+      dispatch(updEmployees(employees))
+    },
+    updateResearch: (research) => {
+      dispatch(updResearch(research))
+    },
+    updateThinkSpeed: (thinkSpeed) => {
+      dispatch(updThinkSpeed(thinkSpeed))
     }
   }};
 
