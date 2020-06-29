@@ -29,7 +29,6 @@ class App extends Component {
   *   Then start the infinite selling loop
   */
   componentDidMount() {
-    console.log(this.props.wood)
     if (this.state.autoClickers > 0) {
       window.setInterval(() => this.click(), 1000 / this.state.autoClickers)
     }
@@ -113,15 +112,17 @@ class App extends Component {
   }
 
   hireEmployees() {
-    this.setState({employees: this.state.employees + 1}, () => {
+    this.setState({employees: this.state.employees + 1, money: this.state.money - 500}, () => {
       this.props.updateEmployees(this.state.employees)
+      this.props.updateMoney(this.state.money)
       this.updateThinker()
     })
   }
 
   trainEmployees() {
-    this.setState({thinkSpeed: this.state.thinkSpeed + 1}, () => {
+    this.setState({thinkSpeed: this.state.thinkSpeed + 1, money: this.state.money - 1000}, () => {
       this.props.updateThinkSpeed(this.state.thinkSpeed)
+      this.props.updateMoney(this.state.money)
       this.updateThinker()
     })
   }
@@ -169,8 +170,9 @@ class App extends Component {
   renderResearchTeamButton() {
     return (
       <div className={this.state.money > 1000 ? 'clicker' : 'clicker disabled'} onClick={this.state.money > 1000 ? () => {
-        this.setState({stage: 2}, () => {
+        this.setState({stage: 2, money: this.state.money - 1000}, () => {
           this.props.updateStage(this.state.stage)
+          this.props.updateMoney(this.state.money)
         })
       } : ''}>
         Buy Research Team (£1000)
