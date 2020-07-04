@@ -3,7 +3,7 @@ import logo from './logo.svg';
 import './App.scss';
 import { connect } from 'react-redux';
 import { withRouter} from 'react-router-dom';
-import { updPaper, updAutoClickers, updMoney, updSalePrice, updStock } from './store';
+import { updPaper, updAutoClickers, updMoney, updSalePrice, updStock, updWood, updStage, updEmployees, updResearch, updThinkSpeed } from './store';
 
 class App extends Component {
   constructor(props) {
@@ -15,7 +15,12 @@ class App extends Component {
       autoClickers: this.props.autoClickers || 0,
       money: this.props.money || 0,
       salePrice: this.props.salePrice || 0.25,
-      interest: 0.08/this.props.salePrice
+      interest: 0.08/this.props.salePrice,
+      wood: this.props.wood || 0 || 1000,
+      stage: this.props.stage || 1,
+      employees: this.props.employees || 1,
+      research: this.props.research || 0,
+      thinkSpeed: this.props.thinkSpeed || 1
     }
   }
 
@@ -25,7 +30,10 @@ class App extends Component {
   */
   componentDidMount() {
     if (this.state.autoClickers > 0) {
-      window.setInterval(() => this.clickerAdd(), 1000 / this.state.autoClickers)
+      window.setInterval(() => this.click(), 1000 / this.state.autoClickers)
+    }
+    if (this.state.stage > 1) {
+      this.updateThinker()
     }
     this.timedEvents()
   }
@@ -46,19 +54,48 @@ class App extends Component {
   }
 
   // Add paper to the paper total
-  clickerAdd() {
-    this.setState({paper: this.state.paper + 1, stock: this.state.stock + 1}, () => {
-      this.props.updatePaper(this.state.paper)
-      this.props.updateStock(this.state.stock)
+  click() {
+    if (this.state.wood > 0) {
+      var randomWood = Math.random()
+      this.setState({paper: this.state.paper + 1, stock: this.state.stock + 1, wood: this.state.wood - randomWood > 0 ? this.state.wood - randomWood : 0}, () => {
+        this.props.updatePaper(this.state.paper)
+        this.props.updateStock(this.state.stock)
+        this.props.updateWood(this.state.wood)
+      })
+    }
+  }
+
+  think() {
+    this.setState({research: this.state.research + 1}, () => {
+      this.props.updateResearch(this.state.research)
     })
+  }
+
+  updateThinker() {
+    if (this.timerId) {
+      window.clearInterval(this.timerId)
+    }
+    this.timerId = window.setInterval(() => {this.think()}
+      ,(1000 / Math.pow(this.state.thinkSpeed, this.state.employees + this.state.thinkSpeed))
+    )
   }
 
   // Add a new auto clicker
   autoClickerAdd() {
-    this.setState({autoClickers: this.state.autoClickers + 1}, () => {
+    this.setState({autoClickers: this.state.autoClickers + 1, money: this.state.money - 25}, () => {
       this.props.updateAutoClickers(this.state.autoClickers)
+      this.props.updateMoney(this.state.money)
     })
-    window.setInterval(() => this.clickerAdd(), 1000)
+    window.setInterval(() => this.click(), 1000)
+  }
+
+  // Add more wood
+  chopWood() {
+    this.setState({wood: this.state.wood + 800, money: this.state.money - 50}, () => {
+      this.props.updateWood(this.state.wood)
+      this.props.updateMoney(this.state.money)
+    })
+    window.setInterval(() => this.click(), 1000)
   }
 
   // Sell paper
@@ -72,6 +109,22 @@ class App extends Component {
           this.props.updateStock(this.state.stock)
         })
       }
+  }
+
+  hireEmployees() {
+    this.setState({employees: this.state.employees + 1, money: this.state.money - 500}, () => {
+      this.props.updateEmployees(this.state.employees)
+      this.props.updateMoney(this.state.money)
+      this.updateThinker()
+    })
+  }
+
+  trainEmployees() {
+    this.setState({thinkSpeed: this.state.thinkSpeed + 1, money: this.state.money - 1000}, () => {
+      this.props.updateThinkSpeed(this.state.thinkSpeed)
+      this.props.updateMoney(this.state.money)
+      this.updateThinker()
+    })
   }
 
   // Increase sale price
@@ -92,7 +145,7 @@ class App extends Component {
 
   renderClickButton() {
     return (
-      <div className='clicker' onClick={() => this.clickerAdd()}>
+      <div className='clicker' onClick={() => this.click()}>
         Make Paper
       </div>
     )
@@ -100,8 +153,29 @@ class App extends Component {
 
   renderAutoClickButton() {
     return (
-      <div className='clicker' onClick={() => this.autoClickerAdd()}>
-        Buy Auto Paper Maker
+      <div className={this.state.money > 25 ? 'clicker' : 'clicker disabled'} onClick={this.state.money > 25 ? () => this.autoClickerAdd() : ''}>
+        Buy Auto Paper Maker (£25)
+      </div>
+    )
+  }
+
+  renderChopWoodButton() {
+    return (
+      <div className={this.state.money > 50 ? 'clicker' : 'clicker disabled'} onClick={this.state.money > 50 ? () => this.chopWood() : ''}>
+        Chop Down Wood (£50)
+      </div>
+    )
+  }
+
+  renderResearchTeamButton() {
+    return (
+      <div className={this.state.money > 1000 ? 'clicker' : 'clicker disabled'} onClick={this.state.money > 1000 ? () => {
+        this.setState({stage: 2, money: this.state.money - 1000}, () => {
+          this.props.updateStage(this.state.stage)
+          this.props.updateMoney(this.state.money)
+        })
+      } : ''}>
+        Buy Research Team (£1000)
       </div>
     )
   }
@@ -109,51 +183,94 @@ class App extends Component {
   renderSaleButtons() {
     return (
       <div className='saleButtons'>
-        <div className='clicker' onClick={() => this.increaseSalePrice()}>
-          Increase Price
-        </div>
         <div className='clicker' onClick={() => this.decreaseSalePrice()}>
           Decrease Price
+        </div>
+        <div className='clicker' onClick={() => this.increaseSalePrice()}>
+          Increase Price
         </div>
       </div>
     )
   }
 
-  renderPaper() {
+  renderPlaySection() {
     return (
       <div>
         <p className='clicks'>
           Total Paper: {this.state.paper}
         </p>
         <p className='clicks'>
-          Stock: {this.state.stock}
+          Paper Per Second: {this.state.autoClickers}
+        </p>
+        <p className='clicks'> 
+          Remaining Wood: {this.state.wood.toFixed(2)}
+        </p>
+        {this.renderClickButton()}
+        {this.state.paper > 100 ? this.renderAutoClickButton() : ''}
+        {this.state.paper > 500 ? this.renderChopWoodButton() : ''}
+        {this.state.paper > 2000 && this.state.stage === 1 ? this.renderResearchTeamButton() : ''}
+        {this.state.stage > 1 ?
+          <div> 
+            <div className='clicker' onClick={() => this.hireEmployees()}>
+            Hire Employees (£500)
+            </div>
+            <div className='clicker' onClick={() => this.trainEmployees()}>
+              Train Employees (£1000)
+            </div>
+          </div>
+          : ''}
+      </div>      
+    )
+  }
+
+  renderFinancesSection() {
+    return (
+      <div>
+        <p className='clicks'>
+        Stock: {this.state.stock}
         </p>
         <p className='clicks'>
           Money: £{this.state.money.toFixed(2)}
         </p>
         <p className='clicks'>
-          Selling Price: £{this.state.salePrice.toFixed(2)}
-        </p>
-        <p className='clicks'>
           Public Interest: {(this.state.interest*100).toFixed(2)}%
         </p>
         <p className='clicks'>
-          Paper Per Second: {this.state.autoClickers}
+          Selling Price: £{this.state.salePrice.toFixed(2)}
         </p>
-      </div>      
+        {this.renderSaleButtons()}
+      </div>
+    )
+  }
+
+  renderResearchSection() {
+    return (
+      <div>
+        <p className='clicks'>
+          Research: {this.state.research}
+        </p>
+        <p className='clicks'>
+          Employees: {this.state.employees}
+        </p>
+        <p className='clicks'>
+          Think Speed: {this.state.thinkSpeed}
+        </p>
+      </div>
     )
   }
 
   render() {
     return (
       <div className="app">
-        <div className="playSide">
-          {this.renderClickButton()}
-          {/*this.renderAutoClickButton()*/}
-          {this.renderSaleButtons()}
+        <div className={this.state.paper > 10 ? "finances" : "finances hidden"}>
+          {this.renderFinancesSection()}
         </div>
-        <div className="statSide">
-          {this.renderPaper()}
+        <div className="play">
+          
+          {this.renderPlaySection()}
+          </div>
+        <div className={this.state.stage > 1 ? "researchTeam" : "researchTeam hidden"}>
+          {this.renderResearchSection()}
         </div>
       </div>
     );
@@ -182,6 +299,21 @@ const mapDispatchToProps = (dispatch) => {
     },
     updateStock: (stock) => {
       dispatch(updStock(stock))
+    },
+    updateWood: (wood) => {
+      dispatch(updWood(wood))
+    },
+    updateStage: (stage) => {
+      dispatch(updStage(stage))
+    },
+    updateEmployees: (employees) => {
+      dispatch(updEmployees(employees))
+    },
+    updateResearch: (research) => {
+      dispatch(updResearch(research))
+    },
+    updateThinkSpeed: (thinkSpeed) => {
+      dispatch(updThinkSpeed(thinkSpeed))
     }
   }};
 
