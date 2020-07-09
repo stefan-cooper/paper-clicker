@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/paper-clicker/precache-manifest.c1290cdba777b9aee243d95fcec5961b.js"
+  "/paper-clicker/precache-manifest.cf2896fc11a1427687f4b907cc551117.js"
 );
 
 self.addEventListener('message', (event) => {
