@@ -16,7 +16,7 @@ class App extends Component {
       money: this.props.money || 0,
       salePrice: this.props.salePrice || 0.25,
       interest: 0.08/this.props.salePrice,
-      wood: this.props.wood || 0 || 1000,
+      wood: this.props.wood === 0 ? 0 : this.props.wood || 1000,
       stage: this.props.stage || 1,
       employees: this.props.employees || 1,
       research: this.props.research || 0,
