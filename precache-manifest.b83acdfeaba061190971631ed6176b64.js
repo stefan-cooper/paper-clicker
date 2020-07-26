@@ -1,11 +1,11 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "56b27a50fc0d7b6e9d708210c5a44419",
+    "revision": "563cdc183c01da0e29111c287424452f",
     "url": "/paper-clicker/index.html"
   },
   {
-    "revision": "df8bd8548be293d39d12",
-    "url": "/paper-clicker/static/css/main.a482ea34.chunk.css"
+    "revision": "08fef947def23ce9b4fb",
+    "url": "/paper-clicker/static/css/main.6c505054.chunk.css"
   },
   {
     "revision": "6149e97b1a0379fbbbc1",
@@ -16,8 +16,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/paper-clicker/static/js/2.acddea32.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "df8bd8548be293d39d12",
-    "url": "/paper-clicker/static/js/main.d54ad82d.chunk.js"
+    "revision": "08fef947def23ce9b4fb",
+    "url": "/paper-clicker/static/js/main.dd416de7.chunk.js"
   },
   {
     "revision": "44223b2b719fddd569cf",
