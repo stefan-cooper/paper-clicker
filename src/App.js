@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.scss';
 import { connect } from 'react-redux';
 import { withRouter} from 'react-router-dom';
-import { updPaper, updAutoClickers, updMoney, updSalePrice, updStock, updWood, updStage, updEmployees, updResearch, updThinkSpeed } from './store';
+import { updPaper, updAutoClickers, updMoney, updSalePrice, updStock, updWood, updStage, updEmployees, updResearch, updThinkSpeed, updPaperMakerLevel } from './store';
 
 class App extends Component {
   constructor(props) {
@@ -20,7 +19,8 @@ class App extends Component {
       stage: this.props.stage || 1,
       employees: this.props.employees || 1,
       research: this.props.research || 0,
-      thinkSpeed: this.props.thinkSpeed || 1
+      thinkSpeed: this.props.thinkSpeed || 1,
+      paperMakerLevel: this.props.paperMakerLevel || 1
     }
   }
 
@@ -30,7 +30,8 @@ class App extends Component {
   */
   componentDidMount() {
     if (this.state.autoClickers > 0) {
-      window.setInterval(() => this.click(), 1000 / this.state.autoClickers)
+      // Simulate level of auto clickers from previous save
+      window.setInterval(() => this.click(), (1000 / this.state.paperMakerLevel) / this.state.autoClickers)
     }
     if (this.state.stage > 1) {
       this.updateThinker()
@@ -86,7 +87,8 @@ class App extends Component {
       this.props.updateAutoClickers(this.state.autoClickers)
       this.props.updateMoney(this.state.money)
     })
-    window.setInterval(() => this.click(), 1000)
+    // After adding new clicker, add manual interval to the timer
+    window.setInterval(() => this.click(), 1000 / this.state.paperMakerLevel)
   }
 
   // Add more wood
@@ -143,6 +145,13 @@ class App extends Component {
     }
   }
 
+  upgradePaperMaker() {
+    this.setState({research: this.state.research - (Math.pow(this.state.paperMakerLevel,2) * 500), paperMakerLevel: this.state.paperMakerLevel + 1}, () => {
+      this.props.updatePaperMakerLevel(this.state.paperMakerLevel)
+      this.props.updateResearch(this.state.research)
+    })
+  }
+
   renderClickButton() {
     return (
       <div className='clicker' onClick={() => this.click()}>
@@ -176,6 +185,14 @@ class App extends Component {
         })
       } : ''}>
         Buy Research Team (£1000)
+      </div>
+    )
+  }
+
+  renderUpgradePaperMaker() {
+    return (
+      <div className={this.state.research > Math.pow(this.state.paperMakerLevel,2) * 500 ? 'clicker' : 'clicker disabled'} onClick={this.state.research > Math.pow(this.state.paperMakerLevel,2) * 500 ? () => this.upgradePaperMaker() : ''}>
+        Upgrade Paper Makers ({Math.pow(this.state.paperMakerLevel,2) * 500} Research)
       </div>
     )
   }
@@ -255,6 +272,7 @@ class App extends Component {
         <p className='clicks'>
           Think Speed: {this.state.thinkSpeed}
         </p>
+        {this.renderUpgradePaperMaker()}
       </div>
     )
   }
@@ -266,9 +284,8 @@ class App extends Component {
           {this.renderFinancesSection()}
         </div>
         <div className="play">
-          
           {this.renderPlaySection()}
-          </div>
+        </div>
         <div className={this.state.stage > 1 ? "researchTeam" : "researchTeam hidden"}>
           {this.renderResearchSection()}
         </div>
@@ -314,6 +331,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     updateThinkSpeed: (thinkSpeed) => {
       dispatch(updThinkSpeed(thinkSpeed))
+    },
+    updatePaperMakerLevel: (paperMakerLevel) => {
+      dispatch(updPaperMakerLevel(paperMakerLevel))
     }
   }};
 
