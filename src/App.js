@@ -211,10 +211,10 @@ class App extends Component {
         {this.state.paper > 2000 && this.state.stage === 1 ? this.renderResearchTeamButton() : ''}
         {this.state.stage > 1 ?
           <div> 
-            <div className='clicker' onClick={() => this.hireEmployees()}>
+            <div className={this.state.money >= 500 ? 'clicker' : 'clicker disabled'} onClick={this.state.money >= 500 ? () => this.hireEmployees() : ''}>
             Hire Employees (£500)
             </div>
-            <div className='clicker' onClick={() => this.trainEmployees()}>
+            <div className={this.state.money >= 1000 ? 'clicker' : 'clicker disabled'} onClick={this.state.money >= 1000 ? () => this.trainEmployees() : ''}>
               Train Employees (£1000)
             </div>
           </div>
