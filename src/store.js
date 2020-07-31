@@ -1,6 +1,5 @@
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
-import logger from 'redux-logger';
 import { persistStore, persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage';
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
@@ -82,6 +81,12 @@ const actions = (state, action) => {
         thinkSpeed: action.payload
       }
 
+    case "updatePaperMakerLevel":
+      return {
+        ...state,
+        paperMakerLevel: action.payload
+      }
+
     default: {
       return state;
     }
@@ -161,6 +166,13 @@ export const updThinkSpeed = (thinkSpeed) => {
   return {
     type: "updateThinkSpeed",
     payload: thinkSpeed
+  }
+}
+
+export const updPaperMakerLevel = (paperMakerLevel) => {
+  return {
+    type: "updatePaperMakerLevel",
+    payload: paperMakerLevel
   }
 }
 
