@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './App.scss';
 import { connect } from 'react-redux';
 import { withRouter} from 'react-router-dom';
-import { updPaper, updAutoClickers, updMoney, updSalePrice, updStock, updWood, updStage, updEmployees, updResearch, updThinkSpeed, updPaperMakerLevel } from './store';
+import { updPaper, updAutoClickers, updMoney, updSalePrice, updStock, updWood, updStage, updEmployees, updResearch, updThinkSpeed, updPaperMakerLevel, updNotebooksResearched } from './store';
 
 class App extends Component {
   constructor(props) {
@@ -20,7 +20,8 @@ class App extends Component {
       employees: this.props.employees || 1,
       research: this.props.research || 0,
       thinkSpeed: this.props.thinkSpeed || 1,
-      paperMakerLevel: this.props.paperMakerLevel || 1
+      paperMakerLevel: this.props.paperMakerLevel || 1,
+      notebooksResearched: this.props.notebooksResearched || false
     }
   }
 
@@ -240,6 +241,21 @@ class App extends Component {
     )
   }
 
+  sellNotebook() {
+    this.setState({stock: this.state.stock - 20, money: this.state.money + 2}, () => {
+      this.props.updateStock(this.state.stock)
+      this.props.updateMoney(this.state.money)
+    })
+  }
+
+  renderSellNotebook() {
+    return (
+      <div className={this.state.stock >= 20 ? 'clicker' : 'clicker disabled'} onClick={this.state.stock >= 20 ? () => this.sellNotebook() : ''}>
+        Sell Notebook (£2 - 20 Paper)
+      </div>
+    )
+  }
+
   renderFinancesSection() {
     return (
       <div>
@@ -256,6 +272,22 @@ class App extends Component {
           Selling Price: £{this.state.salePrice.toFixed(2)}
         </p>
         {this.renderSaleButtons()}
+        {this.state.notebooksResearched ? this.renderSellNotebook() : ''}
+      </div>
+    )
+  }
+
+  researchNotebooks() {
+    this.setState({research: this.state.research - 1000, notebooksResearched: true}, () => {
+      this.props.updateResearch(this.state.research)
+      this.props.updateNotebooksResearched(this.state.notebooksResearched)
+    })
+  }
+
+  renderResearchNotebooks() {
+    return (
+      <div className={this.state.research > 1000 ? 'clicker' : 'clicker disabled'} onClick={this.state.research > 1000 ? () => this.researchNotebooks() : ''}>
+        Research Notebooks (1000 Research)
       </div>
     )
   }
@@ -273,6 +305,7 @@ class App extends Component {
           Think Speed: {this.state.thinkSpeed}
         </p>
         {this.renderUpgradePaperMaker()}
+        {this.state.notebooksResearched ? '' : this.renderResearchNotebooks()}
       </div>
     )
   }
@@ -334,6 +367,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     updatePaperMakerLevel: (paperMakerLevel) => {
       dispatch(updPaperMakerLevel(paperMakerLevel))
+    },
+    updateNotebooksResearched: (notebooksResearched) => {
+      dispatch(updNotebooksResearched(notebooksResearched))
     }
   }};
 
