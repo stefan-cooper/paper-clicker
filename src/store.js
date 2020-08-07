@@ -87,6 +87,12 @@ const actions = (state, action) => {
         paperMakerLevel: action.payload
       }
 
+    case "updatePaperMakerLevel":
+      return {
+        ...state,
+        notebooksResearched: action.payload
+      }
+
     default: {
       return state;
     }
@@ -173,6 +179,13 @@ export const updPaperMakerLevel = (paperMakerLevel) => {
   return {
     type: "updatePaperMakerLevel",
     payload: paperMakerLevel
+  }
+}
+
+export const updNotebooksResearched = (notebooksResearched) => {
+  return {
+    type: "updateNotebooksResearched",
+    payload: notebooksResearched
   }
 }
 
