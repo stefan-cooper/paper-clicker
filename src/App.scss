@@ -6,15 +6,24 @@ $gradient-3: #2FAF91;
 $gradient-4: #8CD881;
 $gradient-5: #F9F871;
 
-.app {
+.appTop {
   background-color: $background-color;
   min-height: 100vh;
   display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  color: white;
+  font-size: 1.2rem;
+}
+
+.app {
+  background-color: $background-color;
+  display: flex;
   flex-direction: row;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-evenly;
   color: white;
-  font-size: 1.35rem;
+  margin-top: 3vh;
 }
 
 .hidden {
