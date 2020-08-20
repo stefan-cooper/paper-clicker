@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import './App.scss';
 import { connect } from 'react-redux';
 import { withRouter} from 'react-router-dom';
-import { updPaper, updAutoClickers, updMoney, updSalePrice, updStock, updWood, updStage, updEmployees, updResearch, updThinkSpeed, updPaperMakerLevel, updNotebooksResearched } from './store';
+import { updPaper, updAutoClickers, updMoney, updSalePrice, updStock, updWood,
+         updStage, updEmployees, updResearch, updThinkSpeed, updPaperMakerLevel,
+         updNotebooksResearched, updPublicImageResearched, updPublicImageLevel } from './store';
 
 class App extends Component {
   constructor(props) {
@@ -21,7 +23,9 @@ class App extends Component {
       research: this.props.research || 0,
       thinkSpeed: this.props.thinkSpeed || 1,
       paperMakerLevel: this.props.paperMakerLevel || 1,
-      notebooksResearched: this.props.notebooksResearched || false
+      notebooksResearched: this.props.notebooksResearched || false,
+      publicImageResearched: this.props.publicImageResearched || false,
+      publicImageLevel: this.props.publicImageLevel || 1
     }
   }
 
@@ -42,17 +46,19 @@ class App extends Component {
 
   // Interest in paper, more things can be added to this when we add more boosts and marketing etc.
   calculateInterest() {
-    this.setState({interest: 0.08 / this.state.salePrice})
+    this.setState({interest: (0.08 / this.state.salePrice) * (Math.random() * ((this.state.publicImageLevel+0.25)-(this.state.publicImageLevel+0.1)) + (this.state.publicImageLevel+0.1))})
   }
 
   // These events are run every tenth of a second
   timedEvents() {
     window.setInterval(() => {
-      this.calculateInterest()
       if (Math.random() < 0.08/this.state.salePrice) {
         this.sellPaper(Math.floor( Math.random() / this.state.salePrice ))
       }
     }, 100)
+    window.setInterval(() => {
+      this.calculateInterest()
+    }, 4000)
   }
 
   // Add paper to the paper total
@@ -134,6 +140,7 @@ class App extends Component {
   increaseSalePrice() {
     this.setState({salePrice: this.state.salePrice + 0.01}, () => {
       this.props.updateSalePrice(this.state.salePrice)
+      this.calculateInterest()
     })
   }
 
@@ -142,6 +149,7 @@ class App extends Component {
     if (this.state.salePrice > 0.01) {
       this.setState({salePrice: this.state.salePrice - 0.01}, () => {
         this.props.updateSalePrice(this.state.salePrice)
+        this.calculateInterest()
       })
     }
   }
@@ -150,6 +158,35 @@ class App extends Component {
     this.setState({research: this.state.research - (Math.pow(this.state.paperMakerLevel,2) * 500), paperMakerLevel: this.state.paperMakerLevel + 1}, () => {
       this.props.updatePaperMakerLevel(this.state.paperMakerLevel)
       this.props.updateResearch(this.state.research)
+    })
+  }
+
+  upgradePublicImage() {
+    this.setState({money: this.state.money - (Math.pow(this.state.publicImageLevel,2) * 500), publicImageLevel: this.state.publicImageLevel + 1}, () => {
+      this.props.updatePublicImageLevel(this.state.publicImageLevel)
+      this.props.updateMoney(this.state.money)
+      this.calculateInterest()
+    })
+  }
+
+  sellNotebook() {
+    this.setState({stock: this.state.stock - 20, money: this.state.money + 2}, () => {
+      this.props.updateStock(this.state.stock)
+      this.props.updateMoney(this.state.money)
+    })
+  }
+
+  researchNotebooks() {
+    this.setState({research: this.state.research - 1000, notebooksResearched: true}, () => {
+      this.props.updateResearch(this.state.research)
+      this.props.updateNotebooksResearched(this.state.notebooksResearched)
+    })
+  }
+
+  researchPublicImage() {
+    this.setState({research: this.state.research - 5000, publicImageResearched: true}, () => {
+      this.props.updateResearch(this.state.research)
+      this.props.updatePublicImageResearched(this.state.publicImageResearched)
     })
   }
 
@@ -190,14 +227,6 @@ class App extends Component {
     )
   }
 
-  renderUpgradePaperMaker() {
-    return (
-      <div className={this.state.research > Math.pow(this.state.paperMakerLevel,2) * 500 ? 'clicker' : 'clicker disabled'} onClick={this.state.research > Math.pow(this.state.paperMakerLevel,2) * 500 ? () => this.upgradePaperMaker() : ''}>
-        Upgrade Paper Makers ({Math.pow(this.state.paperMakerLevel,2) * 500} Research)
-      </div>
-    )
-  }
-
   renderSaleButtons() {
     return (
       <div className='saleButtons'>
@@ -207,6 +236,46 @@ class App extends Component {
         <div className='clicker' onClick={() => this.increaseSalePrice()}>
           Increase Price
         </div>
+      </div>
+    )
+  }
+
+  renderSellNotebook() {
+    return (
+      <div className={this.state.stock >= 20 ? 'clicker' : 'clicker disabled'} onClick={this.state.stock >= 20 ? () => this.sellNotebook() : ''}>
+        Sell Notebook (£2 - 20 Paper)
+      </div>
+    )
+  }
+
+  renderUpgradePaperMaker() {
+    return (
+      <div className={this.state.research > Math.pow(this.state.paperMakerLevel,2) * 500 ? 'clicker' : 'clicker disabled'} onClick={this.state.research > Math.pow(this.state.paperMakerLevel,2) * 500 ? () => this.upgradePaperMaker() : ''}>
+        Upgrade Paper Makers ({Math.pow(this.state.paperMakerLevel,2) * 500} Research)
+      </div>
+    )
+  }
+
+  renderPublicImageChanger() {
+    return (
+      <div className={this.state.money > Math.pow(this.state.publicImageLevel,2) * 500 ? 'clicker' : 'clicker disabled'} onClick={this.state.money > Math.pow(this.state.publicImageLevel,2) * 500 ? () => this.upgradePublicImage() : ''}>
+        Improve Public Image (£{Math.pow(this.state.publicImageLevel,2) * 500})
+      </div>
+    )
+  }
+
+  renderResearchNotebooks() {
+    return (
+      <div className={this.state.research > 1000 ? 'clicker' : 'clicker disabled'} onClick={this.state.research > 1000 ? () => this.researchNotebooks() : ''}>
+        Research Notebooks (1000 Research)
+      </div>
+    )
+  }
+
+  renderPublicImage() {
+    return (
+      <div className={this.state.research > 5000 ? 'clicker' : 'clicker disabled'} onClick={this.state.research > 5000 ? () => this.researchPublicImage() : ''}>
+        Understand Marketing and Public Image (5000 Research)
       </div>
     )
   }
@@ -241,21 +310,6 @@ class App extends Component {
     )
   }
 
-  sellNotebook() {
-    this.setState({stock: this.state.stock - 20, money: this.state.money + 2}, () => {
-      this.props.updateStock(this.state.stock)
-      this.props.updateMoney(this.state.money)
-    })
-  }
-
-  renderSellNotebook() {
-    return (
-      <div className={this.state.stock >= 20 ? 'clicker' : 'clicker disabled'} onClick={this.state.stock >= 20 ? () => this.sellNotebook() : ''}>
-        Sell Notebook (£2 - 20 Paper)
-      </div>
-    )
-  }
-
   renderFinancesSection() {
     return (
       <div>
@@ -272,22 +326,8 @@ class App extends Component {
           Selling Price: £{this.state.salePrice.toFixed(2)}
         </p>
         {this.renderSaleButtons()}
+        {this.state.publicImageResearched ? this.renderPublicImageChanger() : ''}
         {this.state.notebooksResearched ? this.renderSellNotebook() : ''}
-      </div>
-    )
-  }
-
-  researchNotebooks() {
-    this.setState({research: this.state.research - 1000, notebooksResearched: true}, () => {
-      this.props.updateResearch(this.state.research)
-      this.props.updateNotebooksResearched(this.state.notebooksResearched)
-    })
-  }
-
-  renderResearchNotebooks() {
-    return (
-      <div className={this.state.research > 1000 ? 'clicker' : 'clicker disabled'} onClick={this.state.research > 1000 ? () => this.researchNotebooks() : ''}>
-        Research Notebooks (1000 Research)
       </div>
     )
   }
@@ -306,23 +346,27 @@ class App extends Component {
         </p>
         {this.renderUpgradePaperMaker()}
         {this.state.notebooksResearched ? '' : this.renderResearchNotebooks()}
+        {this.state.publicImageResearched ? '' : this.renderPublicImage()}
       </div>
     )
   }
 
   render() {
     return (
-      <div className="app">
-        <div className={this.state.paper > 10 ? "finances" : "finances hidden"}>
-          {this.renderFinancesSection()}
-        </div>
-        <div className="play">
-          {this.renderPlaySection()}
-        </div>
-        <div className={this.state.stage > 1 ? "researchTeam" : "researchTeam hidden"}>
-          {this.renderResearchSection()}
+      <div className='appTop'>
+        <div className="app">
+          <div className={this.state.paper > 10 ? "finances" : "finances hidden"}>
+            {this.renderFinancesSection()}
+          </div>
+          <div className="play">
+            {this.renderPlaySection()}
+          </div>
+          <div className={this.state.stage > 1 ? "researchTeam" : "researchTeam hidden"}>
+            {this.renderResearchSection()}
+          </div>
         </div>
       </div>
+
     );
   }
 }
@@ -370,6 +414,12 @@ const mapDispatchToProps = (dispatch) => {
     },
     updateNotebooksResearched: (notebooksResearched) => {
       dispatch(updNotebooksResearched(notebooksResearched))
+    },
+    updatePublicImageResearched: (publicImageResearched) => {
+      dispatch(updPublicImageResearched(publicImageResearched))
+    },
+    updatePublicImageLevel: (publicImageLevel) => {
+      dispatch(updPublicImageLevel(publicImageLevel))
     }
   }};
 

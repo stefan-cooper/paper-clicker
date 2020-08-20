@@ -87,10 +87,22 @@ const actions = (state, action) => {
         paperMakerLevel: action.payload
       }
 
-    case "updatePaperMakerLevel":
+    case "updateNotebooksResearched":
       return {
         ...state,
         notebooksResearched: action.payload
+      }
+
+    case "updatePublicImageResearched":
+      return {
+        ...state,
+        publicImageResearched: action.payload
+      }
+
+    case "updatePublicImageLevel":
+      return {
+        ...state,
+        publicImageLevel: action.payload
       }
 
     default: {
@@ -186,6 +198,20 @@ export const updNotebooksResearched = (notebooksResearched) => {
   return {
     type: "updateNotebooksResearched",
     payload: notebooksResearched
+  }
+}
+
+export const updPublicImageResearched = (publicImageResearched) => {
+  return {
+    type: "updatePublicImageResearched",
+    payload: publicImageResearched
+  }
+}
+
+export const updPublicImageLevel = (publicImageLevel) => {
+  return {
+    type: "updatePublicImageLevel",
+    payload: publicImageLevel
   }
 }
 
