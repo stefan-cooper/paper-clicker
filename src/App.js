@@ -1,330 +1,100 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.scss';
 import { connect } from 'react-redux';
 import { withRouter} from 'react-router-dom';
+import Finance from './Finance';
+import Research from './Research';
+import Play from './Play';
 import { updPaper, updAutoClickers, updMoney, updSalePrice, updStock, updWood, updStage, updEmployees, updResearch, updThinkSpeed, updPaperMakerLevel, updNotebooksResearched } from './store';
 
-class App extends Component {
-  constructor(props) {
-    super(props);
+const App = (props) => {
+  const [paper, updatePaper] = useState(props.paper || 0);
+  const [stock, updateStock] = useState(props.stock || 0);
+  const [autoClickers, updateAutoClickers] = useState(props.autoClickers || 0);
+  const [money, updateMoney] = useState(props.money || 0);
+  const [salePrice, updateSalePrice] = useState(props.salePrice || 0.25);
+  const [wood, updateWood] = useState(props.wood === 0 ? 0 : props.wood || 1000);
+  const [stage, updateStage] = useState(props.stage || 1);
+  const [employees, updateEmployees] = useState(props.employees || 1);
+  const [research, updateResearch] = useState(props.research || 0);
+  const [thinkSpeed, updateThinkSpeed] = useState(props.thinkSpeed || 1);
+  const [paperMakerLevel, updatePaperMakerLevel] = useState(props.paperMakerLevel || 1);
+  const [notebooksResearched, updateNotebooksResearched] = useState(props.notebooksResearched || false);
 
-    this.state = {
-      paper: this.props.paper || 0,
-      stock: this.props.stock || 0,
-      autoClickers: this.props.autoClickers || 0,
-      money: this.props.money || 0,
-      salePrice: this.props.salePrice || 0.25,
-      interest: 0.08/this.props.salePrice,
-      wood: this.props.wood === 0 ? 0 : this.props.wood || 1000,
-      stage: this.props.stage || 1,
-      employees: this.props.employees || 1,
-      research: this.props.research || 0,
-      thinkSpeed: this.props.thinkSpeed || 1,
-      paperMakerLevel: this.props.paperMakerLevel || 1,
-      notebooksResearched: this.props.notebooksResearched || false
-    }
+  useEffect(() => {
+    props.savePaper(paper);
+    props.saveStock(stock);
+    props.saveAutoClickers(autoClickers);
+    props.saveMoney(money);
+    props.saveSalePrice(salePrice);
+    props.saveWood(wood);
+    props.saveStage(stage);
+    props.saveEmployees(employees);
+    props.saveResearch(research);
+    props.saveThinkSpeed(thinkSpeed);
+    props.savePaperMakerLevel(paperMakerLevel);
+    props.saveNotebooksResearched(notebooksResearched);
+  }, [props, paper, stock, autoClickers, money, salePrice, wood, stage, employees, research, thinkSpeed, paperMakerLevel, notebooksResearched])
+
+
+  const playData = {
+    updateAutoClickers,
+    updateMoney,
+    updateWood,
+    updatePaper,
+    updateStock,
+    updateStage,
+    updatePaperMakerLevel,
+    money,
+    wood,
+    stock,
+    paper,
+    stage,
+    autoClickers,
+    paperMakerLevel
   }
 
-  /*
-  *   Run on App Load, check if any existing auto clickers saved and add an interval for every single one
-  *   Then start the infinite selling loop
-  */
-  componentDidMount() {
-    if (this.state.autoClickers > 0) {
-      // Simulate level of auto clickers from previous save
-      window.setInterval(() => this.click(), (1000 / this.state.paperMakerLevel) / this.state.autoClickers)
-    }
-    if (this.state.stage > 1) {
-      this.updateThinker()
-    }
-    this.timedEvents()
+  const financeData = {
+    updateMoney,
+    updateStock,
+    updateSalePrice,
+    salePrice,
+    notebooksResearched,
+    stock,
+    money,
+    paper,
+    wood
   }
 
-  // Interest in paper, more things can be added to this when we add more boosts and marketing etc.
-  calculateInterest() {
-    this.setState({interest: 0.08 / this.state.salePrice})
-  }
+  const researchData = {
+    updateEmployees,
+    updateMoney,
+    updateThinkSpeed,
+    updatePaperMakerLevel,
+    updateResearch,
+    updateNotebooksResearched,
+    employees,
+    money,
+    thinkSpeed,
+    research,
+    paperMakerLevel,
+    stage,
+    notebooksResearched
+  };
 
-  // These events are run every tenth of a second
-  timedEvents() {
-    window.setInterval(() => {
-      this.calculateInterest()
-      if (Math.random() < 0.08/this.state.salePrice) {
-        this.sellPaper(Math.floor( Math.random() / this.state.salePrice ))
-      }
-    }, 100)
-  }
-
-  // Add paper to the paper total
-  click() {
-    if (this.state.wood > 0) {
-      var randomWood = Math.random()
-      this.setState({paper: this.state.paper + 1, stock: this.state.stock + 1, wood: this.state.wood - randomWood > 0 ? this.state.wood - randomWood : 0}, () => {
-        this.props.updatePaper(this.state.paper)
-        this.props.updateStock(this.state.stock)
-        this.props.updateWood(this.state.wood)
-      })
-    }
-  }
-
-  think() {
-    this.setState({research: this.state.research + 1}, () => {
-      this.props.updateResearch(this.state.research)
-    })
-  }
-
-  updateThinker() {
-    if (this.timerId) {
-      window.clearInterval(this.timerId)
-    }
-    this.timerId = window.setInterval(() => {this.think()}
-      ,(1000 / Math.pow(this.state.thinkSpeed, this.state.employees + this.state.thinkSpeed))
-    )
-  }
-
-  // Add a new auto clicker
-  autoClickerAdd() {
-    this.setState({autoClickers: this.state.autoClickers + 1, money: this.state.money - 25}, () => {
-      this.props.updateAutoClickers(this.state.autoClickers)
-      this.props.updateMoney(this.state.money)
-    })
-    // After adding new clicker, add manual interval to the timer
-    window.setInterval(() => this.click(), 1000 / this.state.paperMakerLevel)
-  }
-
-  // Add more wood
-  chopWood() {
-    this.setState({wood: this.state.wood + 800, money: this.state.money - 50}, () => {
-      this.props.updateWood(this.state.wood)
-      this.props.updateMoney(this.state.money)
-    })
-    window.setInterval(() => this.click(), 1000)
-  }
-
-  // Sell paper
-  sellPaper(selling) {
-    var toBeSold = selling > 10 ? 10 : selling
-    if (this.state.stock > 0) {
-        this.setState({stock: toBeSold < this.state.stock ? this.state.stock - toBeSold : 0, 
-        money: toBeSold < this.state.stock ? this.state.money + (this.state.salePrice * toBeSold) 
-        : this.state.money + (this.state.salePrice * toBeSold - (((this.state.stock - toBeSold) * -1) * this.state.salePrice))}, () => {
-          this.props.updateMoney(this.state.money)
-          this.props.updateStock(this.state.stock)
-        })
-      }
-  }
-
-  hireEmployees() {
-    this.setState({employees: this.state.employees + 1, money: this.state.money - 500}, () => {
-      this.props.updateEmployees(this.state.employees)
-      this.props.updateMoney(this.state.money)
-      this.updateThinker()
-    })
-  }
-
-  trainEmployees() {
-    this.setState({thinkSpeed: this.state.thinkSpeed + 1, money: this.state.money - 1000}, () => {
-      this.props.updateThinkSpeed(this.state.thinkSpeed)
-      this.props.updateMoney(this.state.money)
-      this.updateThinker()
-    })
-  }
-
-  // Increase sale price
-  increaseSalePrice() {
-    this.setState({salePrice: this.state.salePrice + 0.01}, () => {
-      this.props.updateSalePrice(this.state.salePrice)
-    })
-  }
-
-  // Decrease Sale Price
-  decreaseSalePrice() {
-    if (this.state.salePrice > 0.01) {
-      this.setState({salePrice: this.state.salePrice - 0.01}, () => {
-        this.props.updateSalePrice(this.state.salePrice)
-      })
-    }
-  }
-
-  upgradePaperMaker() {
-    this.setState({research: this.state.research - (Math.pow(this.state.paperMakerLevel,2) * 500), paperMakerLevel: this.state.paperMakerLevel + 1}, () => {
-      this.props.updatePaperMakerLevel(this.state.paperMakerLevel)
-      this.props.updateResearch(this.state.research)
-    })
-  }
-
-  renderClickButton() {
-    return (
-      <div className='clicker' onClick={() => this.click()}>
-        Make Paper
+  return (
+    <div className="app">
+      <div className={paper > 10 ? "finances" : "finances hidden"}>
+        <Finance defaults={props} finance={financeData} />
       </div>
-    )
-  }
-
-  renderAutoClickButton() {
-    return (
-      <div className={this.state.money > 25 ? 'clicker' : 'clicker disabled'} onClick={this.state.money > 25 ? () => this.autoClickerAdd() : ''}>
-        Buy Auto Paper Maker (£25)
+      <div className="play">
+        <Play defaults={props} play={playData} />
       </div>
-    )
-  }
-
-  renderChopWoodButton() {
-    return (
-      <div className={this.state.money > 50 ? 'clicker' : 'clicker disabled'} onClick={this.state.money > 50 ? () => this.chopWood() : ''}>
-        Chop Down Wood (£50)
+      <div className={stage > 1 ? "researchTeam" : "researchTeam hidden"}>
+        <Research defaults={props} researchData={researchData} />
       </div>
-    )
-  }
-
-  renderResearchTeamButton() {
-    return (
-      <div className={this.state.money > 1000 ? 'clicker' : 'clicker disabled'} onClick={this.state.money > 1000 ? () => {
-        this.setState({stage: 2, money: this.state.money - 1000}, () => {
-          this.props.updateStage(this.state.stage)
-          this.props.updateMoney(this.state.money)
-        })
-      } : ''}>
-        Buy Research Team (£1000)
-      </div>
-    )
-  }
-
-  renderUpgradePaperMaker() {
-    return (
-      <div className={this.state.research > Math.pow(this.state.paperMakerLevel,2) * 500 ? 'clicker' : 'clicker disabled'} onClick={this.state.research > Math.pow(this.state.paperMakerLevel,2) * 500 ? () => this.upgradePaperMaker() : ''}>
-        Upgrade Paper Makers ({Math.pow(this.state.paperMakerLevel,2) * 500} Research)
-      </div>
-    )
-  }
-
-  renderSaleButtons() {
-    return (
-      <div className='saleButtons'>
-        <div className='clicker' onClick={() => this.decreaseSalePrice()}>
-          Decrease Price
-        </div>
-        <div className='clicker' onClick={() => this.increaseSalePrice()}>
-          Increase Price
-        </div>
-      </div>
-    )
-  }
-
-  renderPlaySection() {
-    return (
-      <div>
-        <p className='clicks'>
-          Total Paper: {this.state.paper}
-        </p>
-        <p className='clicks'>
-          Paper Per Second: {this.state.autoClickers}
-        </p>
-        <p className='clicks'> 
-          Remaining Wood: {this.state.wood.toFixed(2)}
-        </p>
-        {this.renderClickButton()}
-        {this.state.paper > 100 ? this.renderAutoClickButton() : ''}
-        {this.state.paper > 500 ? this.renderChopWoodButton() : ''}
-        {this.state.paper > 2000 && this.state.stage === 1 ? this.renderResearchTeamButton() : ''}
-        {this.state.stage > 1 ?
-          <div> 
-            <div className={this.state.money >= 500 ? 'clicker' : 'clicker disabled'} onClick={this.state.money >= 500 ? () => this.hireEmployees() : ''}>
-            Hire Employees (£500)
-            </div>
-            <div className={this.state.money >= 1000 ? 'clicker' : 'clicker disabled'} onClick={this.state.money >= 1000 ? () => this.trainEmployees() : ''}>
-              Train Employees (£1000)
-            </div>
-          </div>
-          : ''}
-      </div>      
-    )
-  }
-
-  sellNotebook() {
-    this.setState({stock: this.state.stock - 20, money: this.state.money + 2}, () => {
-      this.props.updateStock(this.state.stock)
-      this.props.updateMoney(this.state.money)
-    })
-  }
-
-  renderSellNotebook() {
-    return (
-      <div className={this.state.stock >= 20 ? 'clicker' : 'clicker disabled'} onClick={this.state.stock >= 20 ? () => this.sellNotebook() : ''}>
-        Sell Notebook (£2 - 20 Paper)
-      </div>
-    )
-  }
-
-  renderFinancesSection() {
-    return (
-      <div>
-        <p className='clicks'>
-        Stock: {this.state.stock}
-        </p>
-        <p className='clicks'>
-          Money: £{this.state.money.toFixed(2)}
-        </p>
-        <p className='clicks'>
-          Public Interest: {(this.state.interest*100).toFixed(2)}%
-        </p>
-        <p className='clicks'>
-          Selling Price: £{this.state.salePrice.toFixed(2)}
-        </p>
-        {this.renderSaleButtons()}
-        {this.state.notebooksResearched ? this.renderSellNotebook() : ''}
-      </div>
-    )
-  }
-
-  researchNotebooks() {
-    this.setState({research: this.state.research - 1000, notebooksResearched: true}, () => {
-      this.props.updateResearch(this.state.research)
-      this.props.updateNotebooksResearched(this.state.notebooksResearched)
-    })
-  }
-
-  renderResearchNotebooks() {
-    return (
-      <div className={this.state.research > 1000 ? 'clicker' : 'clicker disabled'} onClick={this.state.research > 1000 ? () => this.researchNotebooks() : ''}>
-        Research Notebooks (1000 Research)
-      </div>
-    )
-  }
-
-  renderResearchSection() {
-    return (
-      <div>
-        <p className='clicks'>
-          Research: {this.state.research}
-        </p>
-        <p className='clicks'>
-          Employees: {this.state.employees}
-        </p>
-        <p className='clicks'>
-          Think Speed: {this.state.thinkSpeed}
-        </p>
-        {this.renderUpgradePaperMaker()}
-        {this.state.notebooksResearched ? '' : this.renderResearchNotebooks()}
-      </div>
-    )
-  }
-
-  render() {
-    return (
-      <div className="app">
-        <div className={this.state.paper > 10 ? "finances" : "finances hidden"}>
-          {this.renderFinancesSection()}
-        </div>
-        <div className="play">
-          {this.renderPlaySection()}
-        </div>
-        <div className={this.state.stage > 1 ? "researchTeam" : "researchTeam hidden"}>
-          {this.renderResearchSection()}
-        </div>
-      </div>
-    );
-  }
+    </div>
+  );
 }
 
 const mapStateToProps = (state) => {
@@ -335,40 +105,40 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    updatePaper: (paper) => {
+    savePaper: (paper) => {
       dispatch(updPaper(paper))
     },
-    updateAutoClickers: (autoClickers) => {
+    saveAutoClickers: (autoClickers) => {
       dispatch(updAutoClickers(autoClickers))
     },
-    updateMoney: (money) => {
+    saveMoney: (money) => {
       dispatch(updMoney(money))
     },
-    updateSalePrice: (price) => {
+    saveSalePrice: (price) => {
       dispatch(updSalePrice(price))
     },
-    updateStock: (stock) => {
+    saveStock: (stock) => {
       dispatch(updStock(stock))
     },
-    updateWood: (wood) => {
+    saveWood: (wood) => {
       dispatch(updWood(wood))
     },
-    updateStage: (stage) => {
+    saveStage: (stage) => {
       dispatch(updStage(stage))
     },
-    updateEmployees: (employees) => {
+    saveEmployees: (employees) => {
       dispatch(updEmployees(employees))
     },
-    updateResearch: (research) => {
+    saveResearch: (research) => {
       dispatch(updResearch(research))
     },
-    updateThinkSpeed: (thinkSpeed) => {
+    saveThinkSpeed: (thinkSpeed) => {
       dispatch(updThinkSpeed(thinkSpeed))
     },
-    updatePaperMakerLevel: (paperMakerLevel) => {
+    savePaperMakerLevel: (paperMakerLevel) => {
       dispatch(updPaperMakerLevel(paperMakerLevel))
     },
-    updateNotebooksResearched: (notebooksResearched) => {
+    saveNotebooksResearched: (notebooksResearched) => {
       dispatch(updNotebooksResearched(notebooksResearched))
     }
   }};

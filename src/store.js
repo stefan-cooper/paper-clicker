@@ -87,7 +87,7 @@ const actions = (state, action) => {
         paperMakerLevel: action.payload
       }
 
-    case "updatePaperMakerLevel":
+    case "updateNotebooksResearched":
       return {
         ...state,
         notebooksResearched: action.payload
