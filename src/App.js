@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import './App.scss';
 import { connect } from 'react-redux';
 import { withRouter} from 'react-router-dom';
-import Finance from './Finance';
-import Research from './Research';
-import Play from './Play';
+import Finance from './components/panels/Finance/Finance';
+import Research from './components/panels/Research/Research';
+import Play from './components/panels/Play/Play';
 import { updPaper, updAutoClickers, updMoney, updSalePrice, updStock, updWood, updStage, updEmployees, updResearch, updThinkSpeed, updPaperMakerLevel, updNotebooksResearched } from './store';
 
 const App = (props) => {
@@ -81,17 +81,79 @@ const App = (props) => {
     stage,
     notebooksResearched
   };
+  const renderDevToolbar = () => {
+    return <div className={'devToolbar'}>
+      <label>Stage: <input type='text' value={stage} onChange={(e) => updateStage(parseInt(e.target.value) || 1)} /></label>
+      <label>Paper: <input type='text' value={paper} onChange={(e) => updatePaper(parseInt(e.target.value))} /></label>
+      <label>Wood: <input type='text' value={wood} onChange={(e) => updateWood(parseInt(e.target.value))} /></label>
+      <label>Stock: <input type='text' value={stock} onChange={(e) => updateStock(parseInt(e.target.value))} /></label>
+      <label>Money: <input type='text' value={money} onChange={(e) => updateMoney(parseInt(e.target.value))} /></label>
+      <label>paperMakerLevel: <input type='text' value={paperMakerLevel} onChange={(e) => updatePaperMakerLevel(parseInt(e.target.value))} /></label>
+      <label>autoClickers: <input type='text' value={autoClickers} onChange={(e) => updateAutoClickers(parseInt(e.target.value))} /></label>
+      <label>thinkSpeed: <input type='text' value={thinkSpeed} onChange={(e) => updateThinkSpeed(parseInt(e.target.value))} /></label>
+      <label>employees: <input type='text' value={employees} onChange={(e) => updateEmployees(parseInt(e.target.value))} /></label>
+      <label>notebooksResearched: <input type='checkbox' value={notebooksResearched} onChange={(e) => updateNotebooksResearched(e.target.value)} /></label>
+      <div onClick={() => {
+        updateStage(1)
+        updatePaper(0)
+        updateWood(1000)
+        updateStock(0)
+        updateMoney(0)
+        updatePaperMakerLevel(1)
+        updateAutoClickers(0)
+        updateThinkSpeed(1)
+        updateEmployees(0)
+        updateNotebooksResearched(false)
+        updateSalePrice(0.25)
+      }}>Reset</div>
+    </div>
+  }
 
   return (
     <div className="app">
-      <div className={paper > 10 ? "finances" : "finances hidden"}>
-        <Finance defaults={props} finance={financeData} />
-      </div>
+      {process.env.NODE_ENV === 'development' && renderDevToolbar()}
       <div className="play">
         <Play defaults={props} play={playData} />
       </div>
-      <div className={stage > 1 ? "researchTeam" : "researchTeam hidden"}>
+      <div className={paper > 10 ? "play" : "play hidden"}>
+        <Finance defaults={props} finance={financeData} />
+      </div>
+      <div className={stage > 1 ? "play" : "play hidden"}>
         <Research defaults={props} researchData={researchData} />
+        {/* Research Center with all the researchables from research team
+          QOL Researchables:
+            [x] - Notebooks
+            []  - Cheaper paper
+            []  - Cheaper autoclickers
+            []  - 
+          Marketing:
+            []  - Increase public interest
+          Notoriety (World interest in you specifically):
+            []  - Increase notoriety
+          Other resource types:
+            []  - Etc
+          Monopolies:
+            []  - View other competing companies
+            []  - Sabotage other competing companies
+            []  - Buy other competing companies
+          Stock Market:
+            []  - Buy and sell stocks
+            []  - Integration with monopolies for manipulation
+          Crypto
+            []  - Buy and sell crypto
+            []  - Integration with notoriety
+            []  - Advertise / scam for pump and dumps
+          High society:
+            []  - Based from money/notoriety
+            []  - Access to high stakes casinos
+            []  - Access to insider knowledge
+            []  - Influence government decisions
+          World order (Helping world issues):
+            []  - Climate change
+            []  - Space exploration
+            []  - War (?)
+            []  - 
+        */}
       </div>
     </div>
   );
