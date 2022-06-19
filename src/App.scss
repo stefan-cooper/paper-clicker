@@ -6,64 +6,101 @@ $gradient-3: #2FAF91;
 $gradient-4: #8CD881;
 $gradient-5: #F9F871;
 
+$play-height: 18rem;
+
+// Content ----------------------------------
+
 .app {
   background-color: $background-color;
   min-height: 100vh;
   display: flex;
   flex-direction: row;
-  align-items: center;
-  justify-content: space-evenly;
+  align-items: flex-start;
   color: white;
-  font-size: 1.35rem;
+  font-size: 1rem;
+
+  & > * {
+    margin: 0.25rem;
+  }
 }
+
+// Helpers
 
 .hidden {
   visibility: hidden;
 }
 
 .disabled {
-  cursor: default;
+  cursor: not-allowed !important;
   opacity: 0.5;
+
+  &:hover {
+    background-color: $gradient-2;
+  }
 }
+
+// Sections ----------------------------------
 
 .play {
   display: flex;
   flex-direction: column;
-  padding: 1rem;
+  padding: 0.25rem;
   border-style: solid;
   border-color: $gradient-3;
   border-radius: 2.5%;
+  border-width: 1px;
   text-align: center;
+  height: $play-height;
+  overflow: hidden;
 }
 
 .finances {
   display: flex;
   flex-direction: column;
-  padding: 1rem;
+  padding: 0.25rem;
   border-radius: 2.5%;
   border-style: solid;
   border-color: $gradient-3;
   border-radius: 2.5%;
-  text-align: center
+  border-width: 1px;
+  text-align: center;
+  height: $play-height;
 }
 
 .researchTeam {
   display: flex;
   flex-direction: column;
-  padding: 1rem;
+  padding: 0.25rem;
   text-align: center;
   border-radius: 2.5%;
   border-style: solid;
   border-color: $gradient-3;
   border-radius: 2.5%;
+  border-width: 1px;
+  height: $play-height;
+}
+
+.devToolbar {
+  display: flex;
+  flex-direction: column;
+  width: 10rem;
+  position: fixed;
+  right: 0;
+  bottom: 0;
+}
+
+// Misc ---------------------------------
+
+label {
+  font-size: 0.8rem;
 }
 
 .clicker {
-  margin: 0.5rem;
+  margin: 0.25rem;
   text-align: center;
   background-color: $gradient-2;
   color: white;
-  padding: 1rem;
+  padding: 0.5rem;
   border-radius: 5%;
   cursor: pointer;
   user-select: none;
@@ -71,17 +108,13 @@ $gradient-5: #F9F871;
   -khtml-user-select: none;
   -webkit-user-select: none;
   -ms-user-select: none;
+
+  &:hover {
+    background-color: $gradient-3;
+  }
 }
 
 .saleButtons {
-  margin: 1rem;
   display: flex;
-}
-
-.clicker:hover {
-  background-color: $gradient-3;
-}
-
-.disabled:hover {
-  background-color: $gradient-2;
+  justify-content: center;
 }
